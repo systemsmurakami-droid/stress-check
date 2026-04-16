@@ -130,7 +130,7 @@ button:hover {
 <script>
 
 // ===== GAS URL =====
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwFz0vVmZ-qXKUuqtJlC45m9acTrrPlVUdWnVng1noexwwxXh_qGUFAjofG8peSc679/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxVc7G5s6LUMc63RKLyKukzZPLoyGvygwFUGGUfExY9_qiG9WoQJe8w0-neU2_Dx1jQ/exec";
 
 // ===== 状態管理 =====
 let userId = "";
@@ -319,30 +319,32 @@ async function send(){
 
   document.getElementById("app").innerHTML = `<h2>送信中...</h2>`;
 
-try{
-await fetch(GAS_URL,{
-  method:"POST",
-  mode:"no-cors",
-  body: new URLSearchParams({
-    userId,
-    A,
-    B,
-    C,
-    highStress,
-    agreed
-  })
-});
+  // フォームデータ形式で送信（GASのe.parameterで受け取れるよう修正）
+  const params = new URLSearchParams();
+  params.append("userId", userId);
+  params.append("A", A);
+  params.append("B", B);
+  params.append("C", C);
+  params.append("highStress", highStress);
+  params.append("agreed", agreed);
 
-  document.getElementById("app").innerHTML = `
-    <h2>送信完了</h2>
-    <p>ご協力ありがとうございました</p>
-  `;
+  try{
+    await fetch(GAS_URL, {
+      method: "POST",
+      body: params
+    });
 
-}catch(e){
-  document.getElementById("app").innerHTML = `
-    <h2>送信完了</h2>
-    <p>※通信状況により確認できない場合があります</p>
-  `;
+    document.getElementById("app").innerHTML = `
+      <h2>送信完了</h2>
+      <p>ご協力ありがとうございました</p>
+    `;
+
+  } catch(e){
+    document.getElementById("app").innerHTML = `
+      <h2>送信エラー</h2>
+      <p>通信に失敗しました</p>
+    `;
+  }
 }
 
 // ===== 起動 =====
