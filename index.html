@@ -328,21 +328,23 @@ async function send(){
   params.append("highStress", highStress);
   params.append("agreed", agreed);
 
-  try{
-    await fetch(GAS_URL, {
-      method: "POST",
-      body: params
-    });
+try{
+  await fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: params
+  });
 
-    document.getElementById("app").innerHTML = `
-      <h2>送信完了</h2>
-      <p>ご協力ありがとうございました</p>
-    `;
+  // no-corsは成功・失敗問わずここに来る
+  document.getElementById("app").innerHTML = `
+    <h2>送信完了</h2>
+    <p>ご協力ありがとうございました</p>
+  `;
 
 } catch(e){
   document.getElementById("app").innerHTML = `
     <h2>送信エラー</h2>
-    <p>${e.message}</p>
+    <p>通信に失敗しました</p>
   `;
 }
 }
