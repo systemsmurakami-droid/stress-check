@@ -130,7 +130,7 @@ button:hover {
 <script>
 
 // ===== GAS URL =====
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwKNd9LmroRjhU7I-CzcBD4sepmUh6ol6xnc9Kv1iY-djFJt2Ys6EGuvZp_HlXewMMA/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwFz0vVmZ-qXKUuqtJlC45m9acTrrPlVUdWnVng1noexwwxXh_qGUFAjofG8peSc679/exec";
 
 // ===== 状態管理 =====
 let userId = "";
@@ -320,18 +320,18 @@ async function send(){
   document.getElementById("app").innerHTML = `<h2>送信中...</h2>`;
 
 try{
-  await fetch(GAS_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      userId,
-      A,B,C,highStress,
-      agreed
-    })
-  });
+await fetch(GAS_URL,{
+  method:"POST",
+  mode:"no-cors",
+  body: new URLSearchParams({
+    userId,
+    A,
+    B,
+    C,
+    highStress,
+    agreed
+  })
+});
 
   document.getElementById("app").innerHTML = `
     <h2>送信完了</h2>
