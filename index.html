@@ -339,12 +339,12 @@ async function send(){
       <p>ご協力ありがとうございました</p>
     `;
 
-  } catch(e){
-    document.getElementById("app").innerHTML = `
-      <h2>送信エラー</h2>
-      <p>通信に失敗しました</p>
-    `;
-  }
+} catch(e){
+  document.getElementById("app").innerHTML = `
+    <h2>送信エラー</h2>
+    <p>${e.message}</p>
+  `;
+}
 }
 
 // ===== 起動 =====
