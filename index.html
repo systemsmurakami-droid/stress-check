@@ -276,6 +276,9 @@ function render(){
   options.forEach((o,i)=>{
     html += `<button class="btn${i}" onclick="answer(${o.v})">${o.t}</button>`;
   });
+  if(index > 0){
+  html += `<button onclick="goBack()" style="background:#ccc;">戻る</button>`;
+}
 
   document.getElementById("app").innerHTML = html;
   document.getElementById("bar").style.width = ((index)/questions.length*100)+"%";
@@ -283,6 +286,13 @@ function render(){
 
 // ===== 回答 =====
 function answer(v){
+  function goBack(){
+  if(index <= 0) return;
+
+  index--;
+  answers.pop(); // 直前の回答を削除
+  render();
+}
   answers.push(v);
   index++;
 
