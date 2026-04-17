@@ -144,15 +144,13 @@ function startScreen(){
     <h2>利用規約</h2>
 
     <div class="terms-box">
-      <p>本ストレスチェックは、従業員のメンタルヘルスの把握</p><p>および職場環境の改善を目的として実施されます。</p>
-      <p>本チェックの結果は医療診断ではなく、</p>
-      <p>参考情報として提供されるものです。</p>
-      <p>個人の回答結果は、本人および産業医のみが</p>
-      <p>閲覧可能であり、会社が個人結果を閲覧することはありません。</p>
-      <p>回答内容を理由として、不利益な取り扱いが行われることはありません。</p>
-      <p>本サービスの利用にあたり、取得したデータは適切に管理されます。</p>
-      <p>本チェックの結果に基づく最終判断は、</p><p>医師の専門的見解に基づいて行われます。</p>
-      <p>上記内容を確認のうえ、同意いただける場合のみご利用ください。</p>
+<p>本ストレスチェックは、従業員のメンタルヘルスの把握および職場環境の改善を目的として実施されます。</p>
+<p>本チェックの結果は医療診断ではなく、参考情報として提供されるものです。</p>
+<p>個人の回答内容は適切に管理され、結果は集計・分析された形で取り扱われます。</p>
+<p>また、法令に基づき必要な範囲を除き、本人の同意なく第三者へ開示されることはありません。</p>
+<p>本サービスの利用にあたり、取得したデータは適切に管理されます。</p>
+<p>本チェックの結果に基づく最終判断は、医師の専門的見解に基づいて行われます。</p>
+<p>上記内容をご確認のうえ、同意いただける場合のみご利用ください。</p>
     </div>
 
   <label class="agree-box">
@@ -173,7 +171,7 @@ function goNext(){
   agreed = true;
 
   document.getElementById("app").innerHTML = `
-    <p>社員コードを入力してください（匿名可）</p>
+    <p>社員番号を入力してください</p><p>※社員番号が不明の場合には</p><p>会社までご連絡ください。</p><p>TEL：092-737-3088</p>
     <input type="text" id="uid">
     <button onclick="start()">開始する</button>
   `;
@@ -257,7 +255,6 @@ const questions = [
 
 ];
 
-
 // ===== 選択肢 =====
 const options = [
 {t:"そうだ",v:4},
@@ -276,23 +273,25 @@ function render(){
   options.forEach((o,i)=>{
     html += `<button class="btn${i}" onclick="answer(${o.v})">${o.t}</button>`;
   });
+
   if(index > 0){
-  html += `<button onclick="goBack()" style="background:#ccc;">戻る</button>`;
-}
+    html += `<button onclick="goBack()" style="background:#ccc;">前の設問に戻る</button>`;
+  }
 
   document.getElementById("app").innerHTML = html;
   document.getElementById("bar").style.width = ((index)/questions.length*100)+"%";
 }
 
-// ===== 回答 =====
-function answer(v){
-  function goBack(){
+// ===== 戻る =====
+function goBack(){
   if(index <= 0) return;
-
   index--;
-  answers.pop(); // 直前の回答を削除
+  answers.pop();
   render();
 }
+
+// ===== 回答 =====
+function answer(v){
   answers.push(v);
   index++;
 
@@ -329,7 +328,6 @@ async function send(){
 
   document.getElementById("app").innerHTML = `<h2>送信中...</h2>`;
 
-  // フォームデータ形式で送信（GASのe.parameterで受け取れるよう修正）
   const params = new URLSearchParams();
   params.append("userId", userId);
   params.append("A", A);
@@ -338,26 +336,25 @@ async function send(){
   params.append("highStress", highStress);
   params.append("agreed", agreed);
 
-try{
-  await fetch(GAS_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: params
-  });
+  try{
+    await fetch(GAS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: params
+    });
 
-  // no-corsは成功・失敗問わずここに来る
-  document.getElementById("app").innerHTML = `
-    <h2>送信完了</h2>
-    <p>ご協力ありがとうございました</p>
-    <p>(ブラウザを閉じてください）</p>
-  `;
+    document.getElementById("app").innerHTML = `
+      <h2>送信完了</h2>
+      <p>ご協力ありがとうございました</p>
+      <p>(ブラウザを閉じてください）</p>
+    `;
 
-} catch(e){
-  document.getElementById("app").innerHTML = `
-    <h2>送信エラー</h2>
-    <p>通信に失敗しました</p>
-  `;
-}
+  } catch(e){
+    document.getElementById("app").innerHTML = `
+      <h2>送信エラー</h2>
+      <p>通信に失敗しました</p>
+    `;
+  }
 }
 
 // ===== 起動 =====
